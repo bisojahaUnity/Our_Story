@@ -4,23 +4,28 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
+    public float gravity = 50.0f;
     CharacterController cc;
-    public float moveSpeed = 6;
+    public float moveSpeed = 3;
+    Vector3 origin;
 
     void Start()
     {
         cc = GetComponent<CharacterController>();
+        origin = this.transform.position;
+
     }
 
     void Update()
     {
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-        Vector3 dir = new Vector3(h, 0, v);
-
+        Cursor.lockState = CursorLockMode.Locked;
+        Vector3 dir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         dir = Camera.main.transform.TransformDirection(dir);
-        dir.y = 0;
+        dir.y = 0.0f;
+        dir.y -= gravity * Time.deltaTime;
+
         dir.Normalize();
+        transform.right = Camera.main.transform.right;
         cc.Move(dir * moveSpeed * Time.deltaTime);
     }
 }
